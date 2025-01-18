@@ -18,7 +18,6 @@ import Badge from "../components/Badge.vue";
 
 // Icon Components
 import Edit from "@/components/Icons/Edit.vue";
-import View from "@/components/Icons/View.vue";
 import Delete from "@/components/Icons/Delete.vue";
 import People from "@/components/Icons/People.vue";
 import Add from "@/components/Icons/Add.vue";
@@ -80,7 +79,7 @@ const currentStep = ref(1);
 const editIndex = ref("")
 
 const openCustomerForm = () => {
-  // clearFormData()
+  clearFormData()
   showCreateCustomerForm.value = true
   currentStep.value = 1;
   console.log(customersData)
@@ -109,13 +108,13 @@ const showEditCustomerForm = ref(false);
 const closeModal = () => {
   showCreateCustomerForm.value = false;
   currentStep.value = 1;
-  //  clearFormData()
+   clearFormData()
 };
 
 const closeEditModal = () => {
   showEditCustomerForm.value = false;
   currentStep.value = 1;
-  //  clearFormData()
+   clearFormData()
 };
 
 
