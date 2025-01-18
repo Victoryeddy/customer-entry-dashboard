@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, reactive, computed, onMounted } from "vue";
 import { useValidation } from "@/composables/useValidation.js";
 import { formatVue3Editor } from "@/Utils/vue3editor";
 import { useCustomerData } from "@/stores";
@@ -22,7 +22,6 @@ import Delete from "@/components/Icons/Delete.vue";
 import People from "@/components/Icons/People.vue";
 import Add from "@/components/Icons/Add.vue";
 
-
 onMounted(() => {
   states.value = States;
 });
@@ -37,7 +36,6 @@ const {
 } = useValidation();
 
 const {
-  form,
   editForm,
   addCustomerData,
   deleteCustomerData,
@@ -45,46 +43,52 @@ const {
   customersData,
 } = useCustomerData();
 
+let form = reactive({
+  first_name: "",
+  last_name: "",
+  email: "",
+  phone: "",
+  state: "",
+  active: true,
+  customerDetail: null,
+});
+
 const states = ref([]);
 const searchQuery = ref("");
-
-
 
 const filteredCustomers = computed(() => {
   const query = searchQuery.value.toLowerCase().trim();
   if (!query) return customersData;
-  return customersData.filter((user) =>
-    user.first_name.toLowerCase().includes(query) ||
-    user.last_name.toLowerCase().includes(query) ||
-    user.phone.toLowerCase().includes(query) ||
-    user.email.toLowerCase().includes(query) ||
-    user.state.toLowerCase().includes(query)
+  return customersData?.filter(
+    (user) =>
+      user.first_name.toLowerCase().includes(query) ||
+      user.last_name.toLowerCase().includes(query) ||
+      user.phone.toLowerCase().includes(query) ||
+      user.email.toLowerCase().includes(query) ||
+      user.state.toLowerCase().includes(query)
   );
 });
 
-
 const clearFormData = () => {
-   form.first_name = "";
-  form.last_name = "";
-  form.email = "";
-  form.phone = "";
-  form.state = "";
-  form.active = true;
-  form.customerDetail = null;
-}
-
-
+  form = {
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone: "",
+    state: "",
+    active: true,
+    customerDetail: null,
+  };
+};
 
 const currentStep = ref(1);
-const editIndex = ref("")
+const editIndex = ref("");
 
 const openCustomerForm = () => {
-  clearFormData()
-  showCreateCustomerForm.value = true
+  clearFormData();
+  showCreateCustomerForm.value = true;
   currentStep.value = 1;
-  console.log(customersData)
-
-}
+};
 
 const firstStepErrors = computed(
   () =>
@@ -98,9 +102,6 @@ const firstStepErrors = computed(
     !form.phone
 );
 
-const secondStepErrors = computed(
-  () => !form.state || !form.active || !form.customerDetail
-);
 
 const showCreateCustomerForm = ref(false);
 const showEditCustomerForm = ref(false);
@@ -108,20 +109,19 @@ const showEditCustomerForm = ref(false);
 const closeModal = () => {
   showCreateCustomerForm.value = false;
   currentStep.value = 1;
-   clearFormData()
+  clearFormData();
 };
 
 const closeEditModal = () => {
   showEditCustomerForm.value = false;
   currentStep.value = 1;
-   clearFormData()
+  clearFormData();
 };
-
-
 
 const handleFormSubmission = () => {
   addCustomerData(form);
   showCreateCustomerForm.value = false;
+  clearFormData();
 
 };
 
@@ -129,15 +129,16 @@ const editingCustomer = (index) => {
   showEditCustomerForm.value = true;
   currentStep.value = 1;
   editCustomer(index);
-  editIndex.value = index
+  editIndex.value = index;
 };
 
 const save = () => {
-   if (editIndex.value !== -1) {
-    Object.assign(customersData[editIndex.value], editForm); 
+  if (editIndex.value !== -1) {
+    Object.assign(customersData[editIndex.value], editForm);
     Object.assign(editForm, {});
+    showEditCustomerForm.value = false;
   }
-}
+};
 
 const headers = ref([
   { name: "No", value: "count" },
@@ -155,14 +156,13 @@ const headers = ref([
       <div class="lg:flex lg:justify-between">
         <h3 class="text-black/50 text-2xl ms-1">Welcome Back 👋🏽</h3>
         <div class="flex justify-end mt-7 mb-0">
-  
           <button
-           class="flex lg:hidden items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500"
-           type="button"
-           @click.prevent="openCustomerForm"
-         >
-           <Add class="me-1" /> Add Customer
-         </button>
+            class="flex lg:hidden items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500"
+            type="button"
+            @click.prevent="openCustomerForm"
+          >
+            <Add class="me-1" /> Add Customer
+          </button>
         </div>
         <button
           class="hidden lg:inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500"
@@ -218,7 +218,6 @@ const headers = ref([
               type="text"
               placeholder="Filter by name, email, phone number"
               v-model="searchQuery"
-             
             />
           </template>
           <template #active="{ item }">
@@ -229,7 +228,7 @@ const headers = ref([
               <Badge :isActive="false" />
             </span>
           </template>
-          <template #actions="{ index }">
+          <template #actions="{ index , item}">
             <div class="flex space-x-2">
               <Edit
                 class="cursor-pointer"
@@ -238,14 +237,19 @@ const headers = ref([
               <!-- <View class="cursor-pointer" /> -->
               <Delete
                 class="cursor-pointer"
-                @click.prevent="deleteCustomerData(index)"
+                @click.prevent="deleteCustomerData(item.email)"
               />
             </div>
           </template>
         </Table>
       </div>
     </div>
-    <Modal :isOpen="showCreateCustomerForm" responsive :header="true" @close="closeModal">
+    <Modal
+      :isOpen="showCreateCustomerForm"
+      responsive
+      :header="true"
+      @close="closeModal"
+    >
       <template #header> Add Customer </template>
       <template #body>
         <Stepper @form-submitted="handleFormSubmission">
@@ -349,7 +353,7 @@ const headers = ref([
                 </Button>
                 <Button
                   type="submit"
-                  :disabled="secondStepErrors"
+                
                   v-if="currentStep === totalSteps"
                   variant="primary"
                 >
@@ -361,8 +365,13 @@ const headers = ref([
         </Stepper>
       </template>
     </Modal>
-    <Modal :isOpen="showEditCustomerForm" responsive :header="true" @close="closeEditModal">
-      <template #header> Add Customer </template>
+    <Modal
+      :isOpen="showEditCustomerForm"
+      responsive
+      :header="true"
+      @close="closeEditModal"
+    >
+      <template #header> Edit Customer </template>
       <template #body>
         <Stepper @form-submitted="save">
           <template #firstSet>
@@ -409,7 +418,11 @@ const headers = ref([
           </template>
           <template #secondSet>
             <div>
-              <Select label="States" :options="states" v-model="editForm.state" />
+              <Select
+                label="States"
+                :options="states"
+                v-model="editForm.state"
+              />
             </div>
             <div>
               <h3 class="text-sm font-medium text-gray-700 mb-1">
@@ -434,7 +447,7 @@ const headers = ref([
                 @blur="
                   () =>
                     validateCustomerDetail(
-                      formatVue3Editor(form.customerDetail)
+                      formatVue3Editor(editForm.customerDetail)
                     )
                 "
               ></VueEditor>
@@ -457,7 +470,7 @@ const headers = ref([
                 <Button
                   type="button"
                   v-if="currentStep < totalSteps"
-                  :disabled="firstStepErrors"
+                  
                   @click="nextStep"
                   variant="primary"
                 >
@@ -465,7 +478,7 @@ const headers = ref([
                 </Button>
                 <Button
                   type="submit"
-                  :disabled="secondStepErrors"
+                  
                   v-if="currentStep === totalSteps"
                   variant="primary"
                 >
