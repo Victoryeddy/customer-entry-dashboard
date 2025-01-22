@@ -212,9 +212,9 @@ const headers = ref([
       <div class="mt-9">
         <Table :headers="headers" :items="filteredCustomers">
           <template #search>
-            <input
+            <Input
               id="search"
-              class="block px-4 py-2 border border-gray-300 rounded-md shadow-sm min-w-full lg:min-w-0 lg:w-[30%] mb-2"
+              class="block rounded-md shadow-sm min-w-full lg:min-w-0 lg:w-[30%] mb-2"
               type="text"
               placeholder="Filter by name, email, phone number"
               v-model="searchQuery"
