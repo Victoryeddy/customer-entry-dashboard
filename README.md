@@ -1,6 +1,6 @@
 # Customer Entry Dashboard
 
-This project is a Customer Entry Dashboard where users can perform CRUD (Create, Read, Update, Delete) operations on customer data. It is built using Vue 3 and Vite.
+This project is a Customer Entry Dashboard where users can perform CRUD (Create, Read, Update, Delete) operations on customer data. It is built using Vue 3, Pinia and Vite.
 
 ## Features
 
