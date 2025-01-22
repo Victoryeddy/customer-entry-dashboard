@@ -21,7 +21,7 @@ defineProps({
 
 <template>
   <div class="overflow-x-auto">
-    <div class="flex lg:justify-end">
+    <div class="lg:flex lg:justify-end">
       <slot name="search" />
     </div>
     <table

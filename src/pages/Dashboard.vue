@@ -156,21 +156,21 @@ const headers = ref([
       <div class="lg:flex lg:justify-between">
         <h3 class="text-black/50 text-2xl ms-1">Welcome Back 👋🏽</h3>
         <div class="flex justify-end mt-7 mb-0">
-          <button
-            class="flex lg:hidden items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500"
+          <Button
+            class="flex lg:hidden"
             type="button"
-            @click.prevent="openCustomerForm"
+            @click="openCustomerForm"
           >
             <Add class="me-1" /> Add Customer
-          </button>
+          </Button>
         </div>
-        <button
-          class="hidden lg:inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500"
+        <Button
+          class="hidden lg:inline-flex"
           type="button"
-          @click.prevent="openCustomerForm"
+          @click="openCustomerForm"
         >
           <Add class="me-1" /> Add Customer
-        </button>
+        </Button>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 mt-6 lg:mt-10 gap-3">
@@ -214,7 +214,7 @@ const headers = ref([
           <template #search>
             <input
               id="search"
-              class="block px-4 py-2 border border-gray-300 rounded-md shadow-sm lg:w-[30%] mb-2"
+              class="block px-4 py-2 border border-gray-300 rounded-md shadow-sm min-w-full lg:w-[30%] mb-2"
               type="text"
               placeholder="Filter by name, email, phone number"
               v-model="searchQuery"
@@ -352,10 +352,10 @@ const headers = ref([
                   Next &raquo;
                 </Button>
                 <Button
-                  type="submit"
-                
+                  type="submit" 
                   v-if="currentStep === totalSteps"
                   variant="primary"
+                  :disabled="errors"
                 >
                   Submit
                 </Button>
