@@ -355,7 +355,7 @@ const headers = ref([
                   type="submit" 
                   v-if="currentStep === totalSteps"
                   variant="primary"
-                  :disabled="errors"
+                  
                 >
                   Submit
                 </Button>
